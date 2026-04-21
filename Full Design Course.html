@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Mastery — Zero to Awwwards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --bg:#f6f4f0;--bg2:#edeae4;--bg3:#e4e0d8;
+  --surface:rgba(255,255,255,.80);--surface2:rgba(255,255,255,.55);
+  --border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.06);
+  --ink:#100f0d;--ink2:#45433f;--ink3:#8c8880;--ink4:#b5b2ac;
+  --fire:#e8500a;--fire2:#f07535;--amber:#d4880a;--amber2:#eaac40;
+  --sapphire:#2e6fd4;--jade:#1f7a5c;
+  --glass:rgba(255,255,255,.65);--glass2:rgba(255,255,255,.42);--glass3:rgba(255,255,255,.22);
+  --sh1:0 2px 8px rgba(0,0,0,.05);--sh2:0 8px 32px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.05);
+  --sh3:0 20px 60px rgba(0,0,0,.10),0 4px 16px rgba(0,0,0,.06);
+  --sh4:0 40px 100px rgba(0,0,0,.13),0 8px 24px rgba(0,0,0,.07);
+  --r1:8px;--r2:14px;--r3:22px;--r4:32px;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-io:cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+.o1{width:700px;height:700px;background:radial-gradient(circle,rgba(232,80,10,.12),transparent 68%);top:-200px;right:-150px;animation:oA 22s ease-in-out infinite}
+.o2{width:550px;height:550px;background:radial-gradient(circle,rgba(46,111,212,.09),transparent 68%);bottom:-100px;left:-100px;animation:oB 28s ease-in-out infinite}
+.o3{width:450px;height:450px;background:radial-gradient(circle,rgba(212,136,10,.07),transparent 68%);top:40%;left:50%;transform:translate(-50%,-50%);animation:oC 35s ease-in-out infinite}
+@keyframes oA{0%,100%{transform:translate(0,0)}40%{transform:translate(-50px,70px)}70%{transform:translate(40px,-50px)}}
+@keyframes oB{0%,100%{transform:translate(0,0)}35%{transform:translate(70px,-40px)}65%{transform:translate(-50px,60px)}}
+@keyframes oC{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-52%,-48%)}}
+
+.progress-bar{position:fixed;top:0;left:0;height:2px;z-index:1000;background:linear-gradient(90deg,var(--fire),var(--amber2),var(--sapphire));width:0%;transition:width .1s linear;box-shadow:0 0 12px rgba(232,80,10,.4)}
+
+/* NAV */
+nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:500;background:var(--glass);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:100px;padding:10px 22px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh2);opacity:0;animation:navIn .7s var(--ease-out) .4s forwards}
+@keyframes navIn{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-brand{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fire);padding-right:14px;border-right:1px solid var(--border);margin-right:6px}
+.nav-pip{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s var(--ease-io);position:relative}
+.nav-pip:hover,.nav-pip.on{background:var(--fire);transform:scale(1.5)}
+.nav-pip[data-t]:hover::after{content:attr(data-t);position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap;background:var(--ink);color:var(--bg);padding:4px 10px;border-radius:6px;pointer-events:none}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;z-index:10;padding:80px 24px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--fire);margin-bottom:28px;opacity:0;animation:fU .7s var(--ease-out) .6s forwards}
+.hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(4rem,11vw,10rem);font-weight:800;letter-spacing:-.055em;line-height:.9;color:var(--ink);margin-bottom:36px;opacity:0;animation:fU .9s var(--ease-out) .75s forwards}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,var(--fire),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--ink2);max-width:580px;margin:0 auto 52px;line-height:1.75;opacity:0;animation:fU .9s var(--ease-out) .9s forwards}
+.hero-stats{display:flex;gap:0;justify-content:center;margin-bottom:56px;opacity:0;animation:fU .9s var(--ease-out) 1.05s forwards;background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden;width:fit-content;margin-left:auto;margin-right:auto}
+.stat{padding:20px 36px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.04em;color:var(--ink);line-height:1}
+.stat-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-top:4px}
+.hero-cta{opacity:0;animation:fU .7s var(--ease-out) 1.2s forwards}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--ink);color:var(--bg);border-radius:100px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .35s var(--ease-out);box-shadow:var(--sh2)}
+.btn-primary:hover{background:var(--fire);transform:translateY(-3px);box-shadow:0 16px 40px rgba(232,80,10,.25)}
+.scroll-hint{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);opacity:0;animation:fU .7s var(--ease-out) 1.7s forwards}
+.scroll-hint::after{content:'';width:1px;height:48px;background:linear-gradient(to bottom,var(--ink4),transparent);animation:lb 2s ease-in-out infinite}
+@keyframes lb{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.15)}}
+
+@keyframes fU{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+
+/* CURRICULUM */
+#curriculum{position:relative;z-index:10;padding:140px 0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px}
+.section-head{margin-bottom:72px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fire);display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--fire);flex-shrink:0}
+.display{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(2.6rem,5.5vw,4.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.0;color:var(--ink)}
+.display em{font-style:normal;background:linear-gradient(135deg,var(--fire),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lead{font-size:clamp(1rem,1.5vw,1.12rem);color:var(--ink2);line-height:1.78;max-width:640px;margin-top:20px}
+
+/* CHAPTER CARDS GRID */
+.chapters-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+.ch-card{
+  background:var(--glass);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border:1px solid var(--border);border-radius:var(--r3);
+  box-shadow:var(--sh2);
+  padding:36px 32px;
+  position:relative;overflow:hidden;
+  cursor:pointer;
+  transition:transform .4s var(--ease-out),box-shadow .4s var(--ease-out),background .3s;
+  text-decoration:none;color:inherit;display:block;
+}
+.ch-card::before{content:'';position:absolute;inset:0;background:linear-gradient(140deg,rgba(255,255,255,.55) 0%,transparent 55%);pointer-events:none;border-radius:inherit}
+.ch-card:hover{transform:translateY(-8px);box-shadow:var(--sh4)}
+.ch-card.featured{grid-column:span 2}
+.ch-card.featured .ch-num{font-size:80px}
+
+.ch-num{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;letter-spacing:-.05em;line-height:1;color:rgba(0,0,0,.05);margin-bottom:20px;transition:color .3s}
+.ch-card:hover .ch-num{color:rgba(232,80,10,.08)}
+
+.ch-level{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.level-zero    {color:var(--jade)}
+.level-found   {color:var(--sapphire)}
+.level-inter   {color:var(--amber)}
+.level-adv     {color:var(--fire)}
+.level-master  {color:#9333ea}
+
+.ch-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(18px,2vw,22px);font-weight:800;letter-spacing:-.025em;line-height:1.2;color:var(--ink);margin-bottom:12px}
+.ch-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:24px}
+
+.ch-topics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.ch-topic{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.07em;padding:3px 9px;border-radius:100px;background:var(--bg2);color:var(--ink3);border:1px solid var(--border2)}
+
+.ch-footer{display:flex;align-items:center;justify-content:space-between}
+.ch-time{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--ink4)}
+.ch-arrow{width:32px;height:32px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .3s var(--ease-out)}
+.ch-card:hover .ch-arrow{background:var(--fire);color:white;transform:translateX(4px)}
+
+/* WHAT YOU'LL LEARN */
+#outcomes{position:relative;z-index:10;padding:120px 0}
+.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
+.outcome-item{padding:28px 32px;background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--border2);border-radius:var(--r2);display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start;transition:all .35s var(--ease-out)}
+.outcome-item:hover{background:var(--glass);box-shadow:var(--sh2);transform:translateX(4px)}
+.outcome-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.outcome-title{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin-bottom:6px}
+.outcome-desc{font-size:13px;color:var(--ink2);line-height:1.7}
+
+/* TOOLS STRIP */
+#tools-strip{position:relative;z-index:10;padding:100px 0}
+.tools-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px}
+.tool-pill{flex-shrink:0;padding:20px 28px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);display:flex;align-items:center;gap:14px;transition:all .35s var(--ease-out);cursor:default}
+.tool-pill:hover{transform:translateY(-4px);box-shadow:var(--sh3)}
+.tool-pill-icon{font-size:24px}
+.tool-pill-name{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.tool-pill-role{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--ink3);margin-top:2px}
+
+/* PATH VISUAL */
+#path{position:relative;z-index:10;padding:120px 0}
+.path-line{display:flex;flex-direction:column;gap:0;position:relative}
+.path-line::before{content:'';position:absolute;left:32px;top:48px;bottom:48px;width:2px;background:linear-gradient(to bottom,var(--fire),var(--amber2),var(--sapphire),#9333ea)}
+.path-step{display:grid;grid-template-columns:66px 1fr;gap:24px;padding:16px 0}
+.path-dot-wrap{display:flex;justify-content:center;padding-top:4px;position:relative;z-index:1}
+.path-dot{width:66px;height:66px;border-radius:50%;background:var(--glass);backdrop-filter:blur(12px);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--fire);box-shadow:var(--sh1);transition:all .35s var(--ease-out)}
+.path-step:hover .path-dot{background:var(--fire);color:white;border-color:var(--fire);transform:scale(1.1);box-shadow:0 0 0 6px rgba(232,80,10,.1)}
+.path-content{padding:14px 28px;background:var(--glass2);backdrop-filter:blur(14px);border:1px solid var(--border2);border-radius:var(--r2);transition:all .35s var(--ease-out);margin-bottom:12px}
+.path-step:hover .path-content{background:var(--glass);box-shadow:var(--sh2)}
+.path-phase{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.path-title{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.025em;color:var(--ink);margin-bottom:8px}
+.path-desc{font-size:13px;color:var(--ink2);line-height:1.7}
+.path-chapters{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.path-ch{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 10px;border-radius:100px;background:var(--bg2);color:var(--ink3);border:1px solid var(--border2)}
+
+/* FINALE / CTA */
+#finale{position:relative;z-index:10;padding:160px 0 120px;text-align:center}
+.finale-badge{display:inline-block;padding:8px 20px;background:rgba(232,80,10,.08);border:1px solid rgba(232,80,10,.18);border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fire);margin-bottom:32px}
+.finale-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(3rem,8vw,7.5rem);font-weight:800;letter-spacing:-.055em;line-height:.92;color:var(--ink);margin-bottom:28px}
+.finale-sub{font-size:18px;color:var(--ink2);max-width:520px;margin:0 auto 52px;line-height:1.75}
+.chapter-grid-sm{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:64px;text-align:left}
+.cg-item{padding:20px 24px;background:var(--glass2);backdrop-filter:blur(12px);border:1px solid var(--border2);border-radius:var(--r2);transition:all .3s var(--ease-out);cursor:pointer;text-decoration:none;color:inherit;display:block}
+.cg-item:hover{background:var(--glass);box-shadow:var(--sh2);transform:translateY(-4px)}
+.cg-n{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--ink4);margin-bottom:6px}
+.cg-t{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.3}
+
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);position:relative;z-index:10}
+
+.reveal{opacity:0;transform:translateY(44px)}
+.reveal-l{opacity:0;transform:translateX(-40px)}
+.reveal-r{opacity:0;transform:translateX(40px)}
+
+@media(max-width:768px){
+  .chapters-grid{grid-template-columns:1fr}
+  .ch-card.featured{grid-column:span 1}
+  .ch-card.featured .ch-num{font-size:52px}
+  .outcomes-grid{grid-template-columns:1fr}
+  .chapter-grid-sm{grid-template-columns:repeat(2,1fr)}
+  .hero-stats{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .stat:last-child{border-bottom:none}
+}
+@media(max-width:480px){
+  .chapter-grid-sm{grid-template-columns:1fr 1fr}
+  nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="pb"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<nav>
+  <span class="nav-brand">Design Mastery</span>
+  <div class="nav-pip on"  data-t="Start"></div>
+  <div class="nav-pip" data-t="Curriculum"></div>
+  <div class="nav-pip" data-t="Outcomes"></div>
+  <div class="nav-pip" data-t="Your Path"></div>
+  <div class="nav-pip" data-t="Begin"></div>
+</nav>
+
+<!-- ======================== HERO ======================== -->
+<section id="hero">
+  <div>
+    <p class="hero-tag">Web Design Mastery — Built for Sachit</p>
+    <h1 class="hero-title">Zero to<br><em>Awwwards.</em></h1>
+    <p class="hero-sub">A complete, no-fluff curriculum that takes you from "what is HTML" to building sites that win design awards — using AI as your creative partner.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Deep Chapters</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Build Exercises</div></div>
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Prompt Templates</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Sites you'll build</div></div>
+    </div>
+    <div class="hero-cta">
+      <a href="chapter-01.html" class="btn-primary">Begin the Journey →</a>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll to explore</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ======================== CURRICULUM ======================== -->
+<section id="curriculum">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">The Full Curriculum</p>
+      <h2 class="display">Every chapter.<br><em>Every skill.</em></h2>
+      <p class="lead">No chapter is optional. Each one builds on the last. By the end you'll have built 6 real sites, understand every tool, and see design the way professionals do.</p>
+    </div>
+
+    <div class="chapters-grid">
+
+      <a href="chapter-01.html" class="ch-card featured reveal">
+        <div class="ch-num">01</div>
+        <div class="ch-level level-zero">★ Foundation — Start Here</div>
+        <div class="ch-title">How the Web Actually Works</div>
+        <div class="ch-desc">Before designing anything, you need to understand what you're designing. HTML, CSS, JavaScript, browsers, servers, domains — all explained without a single line of jargon. This is the mental model everything else sits on.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">HTML skeleton</span>
+          <span class="ch-topic">CSS skin</span>
+          <span class="ch-topic">JS muscles</span>
+          <span class="ch-topic">How browsers render</span>
+          <span class="ch-topic">What Vercel actually does</span>
+          <span class="ch-topic">Dev tools intro</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~25 min read · 1 exercise</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-02.html" class="ch-card reveal">
+        <div class="ch-num">02</div>
+        <div class="ch-level level-zero">★ Foundation</div>
+        <div class="ch-title">The Laws of Visual Design</div>
+        <div class="ch-desc">Hierarchy, contrast, rhythm, balance, proximity, white space. These govern every great site. Learn them and you'll instantly see what's wrong with bad design — and right with great design.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Hierarchy</span>
+          <span class="ch-topic">White space</span>
+          <span class="ch-topic">Contrast</span>
+          <span class="ch-topic">Grid systems</span>
+          <span class="ch-topic">Visual weight</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~30 min · 1 exercise</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-03.html" class="ch-card reveal">
+        <div class="ch-num">03</div>
+        <div class="ch-level level-found">◆ Foundations</div>
+        <div class="ch-title">Typography: Your Loudest Design Decision</div>
+        <div class="ch-desc">Fonts communicate personality before a word is read. Learn how to choose, pair, and size type like a pro — including the negative letter-spacing secret that separates premium from generic.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Font anatomy</span>
+          <span class="ch-topic">Pairing logic</span>
+          <span class="ch-topic">Hierarchy with type</span>
+          <span class="ch-topic">Fluid sizing</span>
+          <span class="ch-topic">Google Fonts</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~35 min · 1 exercise</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-04.html" class="ch-card reveal">
+        <div class="ch-num">04</div>
+        <div class="ch-level level-found">◆ Foundations</div>
+        <div class="ch-title">Color: Emotion in a Hex Code</div>
+        <div class="ch-desc">Color is the fastest emotional signal in design. Learn color theory, the 60-30-10 rule, how to build a system, dark vs light mode, and why "pure black" is always wrong.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Color psychology</span>
+          <span class="ch-topic">60/30/10 rule</span>
+          <span class="ch-topic">Palette building</span>
+          <span class="ch-topic">Dark mode logic</span>
+          <span class="ch-topic">CSS variables</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~30 min · 1 exercise</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-05.html" class="ch-card reveal">
+        <div class="ch-num">05</div>
+        <div class="ch-level level-inter">● Intermediate</div>
+        <div class="ch-title">Layout & Composition</div>
+        <div class="ch-desc">Grids, columns, sections, spacing. How Awwwards winners break the grid on purpose. CSS Grid vs Flexbox in plain English. Responsive design thinking — how the same page adapts to every screen.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">CSS Grid basics</span>
+          <span class="ch-topic">Flexbox basics</span>
+          <span class="ch-topic">Breakpoints</span>
+          <span class="ch-topic">Asymmetric layouts</span>
+          <span class="ch-topic">Spacing systems</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~40 min · 1 build</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-06.html" class="ch-card reveal">
+        <div class="ch-num">06</div>
+        <div class="ch-level level-inter">● Intermediate</div>
+        <div class="ch-title">Motion & Animation</div>
+        <div class="ch-desc">Animation is not decoration — it's direction. Learn when to animate, what to animate, and how fast. CSS transitions, keyframes, GSAP ScrollTrigger, and Lenis smooth scroll explained from scratch.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">CSS transitions</span>
+          <span class="ch-topic">Keyframe animation</span>
+          <span class="ch-topic">GSAP basics</span>
+          <span class="ch-topic">ScrollTrigger</span>
+          <span class="ch-topic">Timing & easing</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~45 min · 1 build</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-07.html" class="ch-card featured reveal">
+        <div class="ch-num">07</div>
+        <div class="ch-level level-inter">● Intermediate</div>
+        <div class="ch-title">Reading Websites Like a Designer</div>
+        <div class="ch-desc">The skill that compounds fastest. A systematic 6-step framework to reverse-engineer any site: identify fonts, decode the color system, map hierarchy, understand the grid, decode motion, name the emotion. Plus: how to use DevTools to extract every design decision any site has ever made — fonts, colors, spacing, CSS rules — in 60 seconds.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">The 6-step framework</span>
+          <span class="ch-topic">DevTools deep dive</span>
+          <span class="ch-topic">Font identification</span>
+          <span class="ch-topic">Color extraction</span>
+          <span class="ch-topic">Swipe file building</span>
+          <span class="ch-topic">Awwwards analysis</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~40 min · 1 exercise</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-08.html" class="ch-card reveal">
+        <div class="ch-num">08</div>
+        <div class="ch-level level-adv">▲ Advanced</div>
+        <div class="ch-title">Figma: Think Before You Build</div>
+        <div class="ch-desc">Design is thinking made visible. Figma is where professionals think before they code. Learn the tool from scratch: frames, components, auto-layout, prototyping, and how to create a design brief Claude can work from.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Figma basics</span>
+          <span class="ch-topic">Frames & components</span>
+          <span class="ch-topic">Auto layout</span>
+          <span class="ch-topic">Prototyping</span>
+          <span class="ch-topic">Design to prompt</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~50 min · 1 build</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-09.html" class="ch-card reveal">
+        <div class="ch-num">09</div>
+        <div class="ch-level level-adv">▲ Advanced</div>
+        <div class="ch-title">The AI Build Workflow</div>
+        <div class="ch-desc">The exact system for going from blank page to deployed site using Claude. Master prompts, design briefs, iteration language, version control, and how to give Claude feedback like a creative director — not a coder.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Master prompt system</span>
+          <span class="ch-topic">Design briefs</span>
+          <span class="ch-topic">Iteration loops</span>
+          <span class="ch-topic">40+ prompt templates</span>
+          <span class="ch-topic">Version control</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~45 min · 1 full build</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-10.html" class="ch-card reveal">
+        <div class="ch-num">10</div>
+        <div class="ch-level level-adv">▲ Advanced</div>
+        <div class="ch-title">Aesthetic Systems & Site Archetypes</div>
+        <div class="ch-desc">Dark editorial. Glassmorphism. Brutalist modern. Cinematic. Light minimal. Learn the 8 great web aesthetics, when to use each, and how to communicate them to Claude with precision — so your output looks intentional, not accidental.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">8 aesthetic systems</span>
+          <span class="ch-topic">SaaS design patterns</span>
+          <span class="ch-topic">Portfolio archetypes</span>
+          <span class="ch-topic">Editorial design</span>
+          <span class="ch-topic">Experimental web</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~40 min · 1 build</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-11.html" class="ch-card featured reveal">
+        <div class="ch-num">11</div>
+        <div class="ch-level level-master">✦ Mastery</div>
+        <div class="ch-title">Awwwards-Level Techniques</div>
+        <div class="ch-desc">The advanced moves that make sites unforgettable. Custom cursors. Text as the hero. Scroll-driven storytelling. Horizontal scrolling. Noise textures and grain overlays. Parallax without the cheese. Video backgrounds. 3D effects without Three.js. Micro-interactions that feel like physics. This chapter is the gap between good and extraordinary.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Custom cursors</span>
+          <span class="ch-topic">Scroll storytelling</span>
+          <span class="ch-topic">Parallax</span>
+          <span class="ch-topic">Noise & grain</span>
+          <span class="ch-topic">Text masking</span>
+          <span class="ch-topic">Horizontal scroll</span>
+          <span class="ch-topic">Micro-interactions</span>
+          <span class="ch-topic">Video bg</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~60 min · 2 builds</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="chapter-12.html" class="ch-card reveal">
+        <div class="ch-num">12</div>
+        <div class="ch-level level-master">✦ Mastery</div>
+        <div class="ch-title">Ship It: Your Portfolio Build</div>
+        <div class="ch-desc">The capstone. Build your personal portfolio from scratch using everything in this course. Full design brief, complete prompt sequence, step-by-step build, deploy to Vercel. You walk away with a live site that shows the world what you can do.</div>
+        <div class="ch-topics">
+          <span class="ch-topic">Full brief template</span>
+          <span class="ch-topic">Design system</span>
+          <span class="ch-topic">Complete build</span>
+          <span class="ch-topic">Vercel deployment</span>
+          <span class="ch-topic">Custom domain</span>
+        </div>
+        <div class="ch-footer">
+          <span class="ch-time">~90 min · 1 full site</span>
+          <div class="ch-arrow">→</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ======================== OUTCOMES ======================== -->
+<section id="outcomes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">What You'll Be Able to Do</p>
+      <h2 class="display">Skills you'll<br>actually <em>have.</em></h2>
+    </div>
+    <div class="outcomes-grid">
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(232,80,10,.1);">👁</div>
+        <div><div class="outcome-title">See design, not just look at it</div><div class="outcome-desc">Look at any site and immediately understand the fonts, color system, hierarchy, and layout decisions. You'll name things other people just feel.</div></div>
+      </div>
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(46,111,212,.1);">🤖</div>
+        <div><div class="outcome-title">Direct AI like a creative director</div><div class="outcome-desc">Give Claude briefs that produce stunning results on the first pass. Use precise design vocabulary, not vague adjectives like "make it better."</div></div>
+      </div>
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(212,136,10,.1);">🎨</div>
+        <div><div class="outcome-title">Build Awwwards-quality sites</div><div class="outcome-desc">Deploy fully animated, responsive, premium sites from a single conversation with Claude. No code knowledge required — just design literacy.</div></div>
+      </div>
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(31,122,92,.1);">📐</div>
+        <div><div class="outcome-title">Design in Figma before you build</div><div class="outcome-desc">Think layouts through visually before prompting. Create reusable design systems, components, and prototypes that brief Claude with precision.</div></div>
+      </div>
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(147,51,234,.1);">⚡</div>
+        <div><div class="outcome-title">Deploy professional sites in hours</div><div class="outcome-desc">Use the AI workflow system to go from blank page to live Vercel URL in a single session. Build product pages, dashboards, and experimental sites at speed.</div></div>
+      </div>
+      <div class="outcome-item reveal">
+        <div class="outcome-icon" style="background:rgba(232,80,10,.1);">🔍</div>
+        <div><div class="outcome-title">Reverse-engineer any great site</div><div class="outcome-desc">Use DevTools and the 6-step framework to extract every design decision from any site — fonts, colors, animations, spacing. Build a swipe file that trains your eye.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ======================== TOOLS STRIP ======================== -->
+<section id="tools-strip">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-bottom:40px">
+      <p class="eyebrow">Tools You'll Master</p>
+      <h2 class="display" style="font-size:clamp(2rem,4vw,3.2rem)">Your entire<br><em>arsenal.</em></h2>
+    </div>
+    <div class="tools-row reveal">
+      <div class="tool-pill"><span class="tool-pill-icon">🎨</span><div><div class="tool-pill-name">Figma</div><div class="tool-pill-role">Design & Prototype</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🤖</span><div><div class="tool-pill-name">Claude</div><div class="tool-pill-role">Build & Iterate</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🚀</span><div><div class="tool-pill-name">Vercel</div><div class="tool-pill-role">Deploy in 30s</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🔍</span><div><div class="tool-pill-name">Chrome DevTools</div><div class="tool-pill-role">Inspect Everything</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">✦</span><div><div class="tool-pill-name">Awwwards</div><div class="tool-pill-role">Daily Inspiration</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">⌨️</span><div><div class="tool-pill-name">VS Code</div><div class="tool-pill-role">View & Edit</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🌀</span><div><div class="tool-pill-name">GSAP</div><div class="tool-pill-role">Pro Animation</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🖋</span><div><div class="tool-pill-name">Google Fonts</div><div class="tool-pill-role">Typography</div></div></div>
+      <div class="tool-pill"><span class="tool-pill-icon">🎯</span><div><div class="tool-pill-name">Dribbble</div><div class="tool-pill-role">UI Inspiration</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ======================== YOUR PATH ======================== -->
+<section id="path">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-bottom:64px">
+      <p class="eyebrow">Your Learning Path</p>
+      <h2 class="display">The journey<br>in <em>four phases.</em></h2>
+      <p class="lead" style="margin-top:20px">Each phase builds on the last. Don't skip. The foundations make the advanced techniques make sense.</p>
+    </div>
+
+    <div class="path-line">
+      <div class="path-step reveal">
+        <div class="path-dot-wrap"><div class="path-dot">I</div></div>
+        <div class="path-content">
+          <div class="path-phase">Phase 1 — Foundation (Ch 01–02)</div>
+          <div class="path-title">Understand before you build</div>
+          <div class="path-desc">Get the mental model right. How the web works, what each technology does, and the core visual design laws that govern everything beautiful. You'll finish this phase seeing design differently.</div>
+          <div class="path-chapters"><span class="path-ch">01 How the Web Works</span><span class="path-ch">02 Visual Design Laws</span></div>
+        </div>
+      </div>
+      <div class="path-step reveal">
+        <div class="path-dot-wrap"><div class="path-dot">II</div></div>
+        <div class="path-content">
+          <div class="path-phase">Phase 2 — Visual Language (Ch 03–05)</div>
+          <div class="path-title">Learn the designer's vocabulary</div>
+          <div class="path-desc">Typography, color, layout. The three pillars of visual design. You'll build your first real pages here — ugly at first, then improving rapidly as the principles click in real time.</div>
+          <div class="path-chapters"><span class="path-ch">03 Typography</span><span class="path-ch">04 Color</span><span class="path-ch">05 Layout</span></div>
+        </div>
+      </div>
+      <div class="path-step reveal">
+        <div class="path-dot-wrap"><div class="path-dot">III</div></div>
+        <div class="path-content">
+          <div class="path-phase">Phase 3 — Craft (Ch 06–09)</div>
+          <div class="path-title">Add motion, tools, and the AI workflow</div>
+          <div class="path-desc">Animation, reading sites like a pro, Figma thinking, and the complete AI build system. This is where speed arrives. You'll go from idea to deployed site in a single session by the end of this phase.</div>
+          <div class="path-chapters"><span class="path-ch">06 Motion</span><span class="path-ch">07 Reading Sites</span><span class="path-ch">08 Figma</span><span class="path-ch">09 AI Workflow</span></div>
+        </div>
+      </div>
+      <div class="path-step reveal">
+        <div class="path-dot-wrap"><div class="path-dot">IV</div></div>
+        <div class="path-content">
+          <div class="path-phase">Phase 4 — Mastery (Ch 10–12)</div>
+          <div class="path-title">Build things that win awards</div>
+          <div class="path-desc">Aesthetic systems, advanced Awwwards-level techniques, and your final capstone build. This is where everything comes together. You'll ship a portfolio site that demonstrates every skill in this course.</div>
+          <div class="path-chapters"><span class="path-ch">10 Aesthetics</span><span class="path-ch">11 Advanced Techniques</span><span class="path-ch">12 Capstone Build</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ======================== FINALE ======================== -->
+<section id="finale">
+  <div class="wrap" style="text-align:center">
+    <div class="finale-badge reveal">Ready when you are</div>
+    <h2 class="finale-title reveal">Start<br>Chapter 01.</h2>
+    <p class="finale-sub reveal">Every great designer was once exactly where you are now. The difference was starting.</p>
+    <a href="chapter-01.html" class="btn-primary reveal">Begin → Chapter 01</a>
+
+    <div class="chapter-grid-sm">
+      <a href="chapter-01.html" class="cg-item reveal"><div class="cg-n">Ch 01</div><div class="cg-t">How the Web Works</div></a>
+      <a href="chapter-02.html" class="cg-item reveal"><div class="cg-n">Ch 02</div><div class="cg-t">Visual Design Laws</div></a>
+      <a href="chapter-03.html" class="cg-item reveal"><div class="cg-n">Ch 03</div><div class="cg-t">Typography</div></a>
+      <a href="chapter-04.html" class="cg-item reveal"><div class="cg-n">Ch 04</div><div class="cg-t">Color Theory</div></a>
+      <a href="chapter-05.html" class="cg-item reveal"><div class="cg-n">Ch 05</div><div class="cg-t">Layout & Composition</div></a>
+      <a href="chapter-06.html" class="cg-item reveal"><div class="cg-n">Ch 06</div><div class="cg-t">Motion & Animation</div></a>
+      <a href="chapter-07.html" class="cg-item reveal"><div class="cg-n">Ch 07</div><div class="cg-t">Reading Sites</div></a>
+      <a href="chapter-08.html" class="cg-item reveal"><div class="cg-n">Ch 08</div><div class="cg-t">Figma</div></a>
+      <a href="chapter-09.html" class="cg-item reveal"><div class="cg-n">Ch 09</div><div class="cg-t">AI Build Workflow</div></a>
+      <a href="chapter-10.html" class="cg-item reveal"><div class="cg-n">Ch 10</div><div class="cg-t">Aesthetic Systems</div></a>
+      <a href="chapter-11.html" class="cg-item reveal"><div class="cg-n">Ch 11</div><div class="cg-t">Awwwards Techniques</div></a>
+      <a href="chapter-12.html" class="cg-item reveal"><div class="cg-n">Ch 12</div><div class="cg-t">Capstone Build</div></a>
+    </div>
+  </div>
+</section>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('pb').style.width=(s/h*100)+'%';
+  const secs=['hero','curriculum','outcomes','tools-strip','path','finale'];
+  const dots=document.querySelectorAll('.nav-pip');
+  secs.forEach((id,i)=>{
+    const el=document.getElementById(id);if(!el)return;
+    const r=el.getBoundingClientRect();
+    if(r.top<=window.innerHeight/2&&r.bottom>=window.innerHeight/2){
+      dots.forEach(d=>d.classList.remove('on'));
+      if(dots[i])dots[i].classList.add('on');
+    }
+  });
+});
+gsap.utils.toArray('.reveal').forEach((el,i)=>{
+  gsap.fromTo(el,{opacity:0,y:48},{opacity:1,y:0,duration:.85,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 84%'},delay:(i%4)*.07});
+});
+gsap.utils.toArray('.ch-card').forEach((el,i)=>{
+  gsap.fromTo(el,{opacity:0,y:40,scale:.97},{opacity:1,y:0,scale:1,duration:.75,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 87%'},delay:(i%3)*.1});
+});
+gsap.utils.toArray('.path-step').forEach((el,i)=>{
+  gsap.fromTo(el,{opacity:0,x:-30},{opacity:1,x:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%'},delay:i*.08});
+});
+</script>
+</body>
+</html>
